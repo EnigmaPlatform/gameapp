@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="black">#FF000000</color>
-    <color name="neon_blue">#FF00FFFF</color>
-    <color name="neon_blue_dark">#FF008080</color>
-    <color name="neon_purple">#FFFF00FF</color>
-    <color name="transparent">#00000000</color>
-</resources>
