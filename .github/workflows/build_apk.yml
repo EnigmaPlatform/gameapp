@@ -34,25 +34,29 @@ jobs:
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33
         
-    - name: Create Buildozer directories
+    - name: Prepare Buildozer environment
       run: |
         mkdir -p ~/.buildozer/android/platform
-        echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-        echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
         
-    - name: Download and install NDK 25b
+    - name: Setup NDK
       run: |
         cd ~/.buildozer/android/platform
-        wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
-        unzip android-ndk-r25b-linux.zip
+        wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip -q android-ndk-r25b-linux.zip
         rm android-ndk-r25b-linux.zip
-        echo "ANDROIDNDK=~/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
+        echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
+        
+    - name: Configure buildozer.spec
+      run: |
+        sed -i '/^android.ndk =/d' buildozer.spec
+        sed -i '/^android.ndk_path =/d' buildozer.spec
+        echo -e "\nandroid.ndk = 25b\nandroid.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r25b" >> buildozer.spec
         
     - name: Build APK
       run: |
-        buildozer init
-        sed -i 's/android.ndk = .*/android.ndk = 25b/' buildozer.spec
-        sed -i 's/android.ndk_path = .*/android.ndk_path = ~\/.buildozer\/android\/platform\/android-ndk-r25b/' buildozer.spec
         buildozer -v android debug
         
     - name: Upload APK
