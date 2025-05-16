@@ -31,15 +31,15 @@ jobs:
           libtool \
           pkg-config \
           zlib1g-dev \
-          libncurses5-dev \
-          libtinfo5 \
+          libncurses-dev \
           build-essential \
           git \
           unzip \
           openjdk-17-jdk \
           libssl-dev \
           libffi-dev \
-          python3-venv
+          python3-venv \
+          libtinfo6
         
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
