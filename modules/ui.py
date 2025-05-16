@@ -151,5 +151,6 @@ class GamificationApp(App):
 if __name__ == '__main__':
     from modules.character import Character
     from modules.leveling import LevelSystem
-    game_manager = GameManager(Character(), LevelSystem())
+    from main import GameManager  # Добавлен импорт GameManager
+    game_manager = GameManager()  # Используем GameManager вместо отдельных классов
     GamificationApp(game_manager=game_manager).run()
