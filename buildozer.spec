@@ -11,7 +11,8 @@ version = 0.1
 # Android специфичные настройки
 android.api = 30
 android.minapi = 21
-android.ndk = 23b
+android.ndk = 25b
+android.ndk_path = %(source.dir)s/.buildozer/android/platform/android-ndk-r25b
 android.sdk = 33
 android.archs = arm64-v8a
 
