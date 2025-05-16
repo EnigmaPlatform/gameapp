@@ -44,3 +44,11 @@ fullscreen = 0
 
 # Включение OpenGL ES 2.0
 android.opengl = 2
+
+# В buildozer.spec
+source.include_exts = py,png,jpg,kv,atlas,ttf
+# В разделе [app]
+android.arch = arm64-v8a
+
+# В разделе требования
+requirements = python3,kivy==2.2.1,openssl,pyjnius,android
