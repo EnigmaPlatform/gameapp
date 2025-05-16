@@ -3,8 +3,6 @@ name: Build APK
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -13,60 +11,53 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
       with:
-        java-version: '17'
-        distribution: 'temurin'
+        python-version: '3.10'
     
     - name: Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y \
           python3-pip \
-          autoconf \
-          automake \
-          cmake \
-          gettext \
-          libtool \
-          pkg-config \
-          zlib1g-dev \
-          libncurses-dev \
-          build-essential \
           git \
           unzip \
           openjdk-17-jdk \
           libssl-dev \
           libffi-dev \
-          python3-venv \
-          libtinfo6
+          zlib1g-dev \
+          libncurses-dev
         
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    
-    - name: Install Buildozer and dependencies
+    - name: Install Buildozer
       run: |
         python -m pip install --upgrade pip wheel
-        pip install buildozer cython==0.29.33 virtualenv
-    
-    - name: Download NDK 25b
+        pip install buildozer cython==0.29.33
+        
+    - name: Create Buildozer directories
       run: |
+        mkdir -p ~/.buildozer/android/platform
+        echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        
+    - name: Download and install NDK 25b
+      run: |
+        cd ~/.buildozer/android/platform
         wget https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
-        unzip android-ndk-r25b-linux.zip -d ~/.buildozer/android/platform
-        mv ~/.buildozer/android/platform/android-ndk-r25b ~/.buildozer/android/platform/android-ndk-r25b
+        unzip android-ndk-r25b-linux.zip
+        rm android-ndk-r25b-linux.zip
         echo "ANDROIDNDK=~/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
-    
-    - name: Build APK with Buildozer
+        
+    - name: Build APK
       run: |
+        buildozer init
+        sed -i 's/android.ndk = .*/android.ndk = 25b/' buildozer.spec
+        sed -i 's/android.ndk_path = .*/android.ndk_path = ~\/.buildozer\/android\/platform\/android-ndk-r25b/' buildozer.spec
         buildozer -v android debug
-        ls -la bin/
-    
-    - name: Upload APK artifact
+        
+    - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: gamification-apk
         path: bin/*.apk
         if-no-files-found: error
-        retention-days: 5
