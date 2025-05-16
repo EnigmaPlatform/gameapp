@@ -21,6 +21,7 @@ android.permissions = INTERNET
 
 # Пути к ресурсам
 source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,xml
+source.include_patterns = assets/*
 icon.filename = assets/icons/free-icon-unicorn-4431575.png
 
 # Ориентация и графика
@@ -36,6 +37,11 @@ requirements =
     pyjnius,
     android,
     kivymd==1.1.1
+
+# Дополнительные настройки Android
+android.allow_backup = True
+android.adaptive_icon_foreground = assets/icons/free-icon-unicorn-4431575.png
+android.wakelock = False
 
 # Оптимизации
 android.no_ndk_build = False
