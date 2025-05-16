@@ -8,10 +8,19 @@ class GameManager:
         self.level_system = LevelSystem()
         
     def add_experience(self, amount):
-        self.level_system.add_experience(amount)
+        return self.level_system.add_experience(amount)
         
     def upgrade_stat(self, stat_name):
         return self.character.increase_stat(stat_name)
+    
+    def get_character_stats(self):
+        return self.character.get_stats()
+    
+    def get_talent_points(self):
+        return self.character.get_talent_points()
+    
+    def get_level_info(self):
+        return self.level_system.get_level_info()
 
 if __name__ == '__main__':
     game = GameManager()
