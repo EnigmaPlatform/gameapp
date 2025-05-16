@@ -24,6 +24,7 @@ jobs:
           python3-pip \
           git \
           unzip \
+          aidl \
           openjdk-17-jdk \
           libssl-dev \
           libffi-dev \
