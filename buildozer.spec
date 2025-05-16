@@ -36,7 +36,8 @@ requirements =
     openssl,
     pyjnius,
     android,
-    kivymd==1.1.1
+    kivymd==1.1.1,
+    libffi 
 
 # Дополнительные настройки Android
 android.allow_backup = True
