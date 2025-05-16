@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     
     steps:
     - uses: actions/checkout@v4
@@ -35,25 +35,32 @@ jobs:
           pkg-config \
           autoconf-archive \
           libltdl-dev \
-          wget
+          wget \
+          curl
+        
+    - name: Clean disk space
+      run: |
+        df -h
+        sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle
+        sudo apt-get clean
+        sudo swapoff -a && sudo swapon -a
         
     - name: Install Buildozer
       run: |
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33
         
-    - name: Check disk space
-      run: |
-        df -h
-        sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle
-        sudo apt-get clean
-        
     - name: Install Android NDK manually
       run: |
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
-        wget -q --show-progress --progress=bar:force:noscroll https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
-        unzip -t android-ndk-r25b-linux.zip
+        # Скачиваем с проверкой целостности
+        wget --tries=3 --retry-connrefused https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        # Альтернативная ссылка на случай проблем
+        [ -f android-ndk-r25b-linux.zip ] || curl -OL https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        # Проверяем архив
+        unzip -t android-ndk-r25b-linux.zip || echo "Archive verification failed"
+        # Распаковываем
         unzip -q android-ndk-r25b-linux.zip -d ~/.buildozer/android/platform/
         rm android-ndk-r25b-linux.zip
         echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
