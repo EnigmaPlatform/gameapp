@@ -42,18 +42,18 @@ jobs:
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33
         
-    - name: Prepare Buildozer environment
+    - name: Check disk space
       run: |
-        mkdir -p ~/.buildozer/android/platform
-        if [ ! -f buildozer.spec ]; then
-          buildozer init
-        fi
+        df -h
+        sudo rm -rf /usr/local/lib/android/sdk/ndk-bundle
+        sudo apt-get clean
         
-    - name: Pre-download NDK
+    - name: Install Android NDK manually
       run: |
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
-        wget -q --show-progress --progress=bar:force https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        wget -q --show-progress --progress=bar:force:noscroll https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        unzip -t android-ndk-r25b-linux.zip
         unzip -q android-ndk-r25b-linux.zip -d ~/.buildozer/android/platform/
         rm android-ndk-r25b-linux.zip
         echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
