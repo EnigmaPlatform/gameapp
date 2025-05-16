@@ -49,6 +49,27 @@ jobs:
       run: |
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33
+
+
+    - name: Install Android Build Tools
+      run: |
+    # Устанавливаем Android Command Line Tools
+      mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+      cd ~/.buildozer/android/platform/android-sdk/cmdline-tools
+      wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+      unzip commandlinetools-linux-9477386_latest.zip
+      mv cmdline-tools latest
+      rm commandlinetools-linux-9477386_latest.zip
+    
+    # Устанавливаем необходимые компоненты
+    yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager \
+      "build-tools;34.0.0" \
+      "platform-tools" \
+      "platforms;android-33" \
+      "cmdline-tools;latest"
+    
+    # Добавляем в PATH
+    echo "$HOME/.buildozer/android/platform/android-sdk/build-tools/34.0.0" >> $GITHUB_PATH  
         
     - name: Install Android NDK manually
       run: |
