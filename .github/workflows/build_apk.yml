@@ -51,9 +51,17 @@ jobs:
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33 virtualenv
     
+    - name: Prepare Buildozer environment
+      run: |
+        # Проверяем существование buildozer.spec
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
+        # Обновляем зависимости
+        buildozer android update
+    
     - name: Build APK with Buildozer
       run: |
-        buildozer init
         buildozer -v android debug
         ls -la bin/
     
