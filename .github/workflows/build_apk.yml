@@ -27,7 +27,11 @@ jobs:
           libssl-dev \
           libffi-dev \
           zlib1g-dev \
-          libncurses-dev
+          libncurses-dev \
+          autoconf \
+          automake \
+          libtool \
+          pkg-config
         
     - name: Install Buildozer
       run: |
@@ -41,7 +45,7 @@ jobs:
           buildozer init
         fi
         
-    - name: Setup NDK
+    - name: Setup NDK 25b
       run: |
         cd ~/.buildozer/android/platform
         wget -q https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
@@ -49,11 +53,23 @@ jobs:
         rm android-ndk-r25b-linux.zip
         echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
         
+    - name: Patch libffi build
+      run: |
+        # Обновляем autoconf
+        sudo apt-get install -y autoconf-archive
+        
+        # Клонируем и патчим libffi
+        git clone https://github.com/libffi/libffi.git ~/libffi
+        cd ~/libffi
+        git checkout v3.4.6  # Используем стабильную версию
+        autoreconf -fiv
+        cd ..
+        
     - name: Configure buildozer.spec
       run: |
-        sed -i '/^android.ndk =/d' buildozer.spec
-        sed -i '/^android.ndk_path =/d' buildozer.spec
-        echo -e "\nandroid.ndk = 25b\nandroid.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r25b" >> buildozer.spec
+        echo -e "\nandroid.ndk = 25b" >> buildozer.spec
+        echo "android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r25b" >> buildozer.spec
+        echo "p4a.local_recipes = $HOME/libffi" >> buildozer.spec
         
     - name: Build APK
       run: |
