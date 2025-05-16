@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     
     steps:
     - uses: actions/checkout@v4
@@ -24,7 +24,6 @@ jobs:
           python3-pip \
           git \
           unzip \
-          aidl \
           openjdk-17-jdk \
           libssl-dev \
           libffi-dev \
@@ -37,7 +36,8 @@ jobs:
           autoconf-archive \
           libltdl-dev \
           wget \
-          curl
+          curl \
+          file
         
     - name: Clean disk space
       run: |
@@ -51,31 +51,42 @@ jobs:
         python -m pip install --upgrade pip wheel
         pip install buildozer cython==0.29.33
         
-    - name: Install Android NDK manually
+    - name: Install Android NDK
       run: |
         mkdir -p ~/.buildozer/android/platform
         cd ~/.buildozer/android/platform
-        wget --tries=3 https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
+        wget --tries=3 --retry-connrefused https://dl.google.com/android/repository/android-ndk-r25b-linux.zip
         unzip -q android-ndk-r25b-linux.zip
         rm android-ndk-r25b-linux.zip
         echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
         
-    - name: Install Android Build Tools
+    - name: Install Android SDK and Build Tools
       run: |
-        mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
-        cd ~/.buildozer/android/platform/android-sdk/cmdline-tools
+        mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+        cd ~/.buildozer/android/platform/android-sdk
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-        unzip commandlinetools-linux-9477386_latest.zip
-        mv cmdline-tools latest
+        unzip commandlinetools-linux-9477386_latest.zip -d cmdline-tools/latest
         rm commandlinetools-linux-9477386_latest.zip
         
-        yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager \
+        yes | cmdline-tools/latest/bin/sdkmanager --licenses
+        
+        cmdline-tools/latest/bin/sdkmanager \
           "build-tools;34.0.0" \
           "platform-tools" \
           "platforms;android-33" \
           "cmdline-tools;latest"
         
         echo "$HOME/.buildozer/android/platform/android-sdk/build-tools/34.0.0" >> $GITHUB_PATH
+        echo "$HOME/.buildozer/android/platform/android-sdk/platform-tools" >> $GITHUB_PATH
+        
+    - name: Verify Android Tools
+      run: |
+        echo "=== Installed Android Tools ==="
+        ls -la ~/.buildozer/android/platform/android-sdk/build-tools/34.0.0/aidl
+        echo -e "\n=== Java Version ==="
+        java -version
+        echo -e "\n=== Android SDK Path ==="
+        echo $ANDROID_SDK_ROOT
         
     - name: Build APK
       run: |
