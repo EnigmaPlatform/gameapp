@@ -1,54 +1,51 @@
 [app]
 
-# Название приложения
+# Основные настройки приложения
 title = Геймификация повседневности
-
-# Имя пакета (должно быть уникальным)
 package.name = gamificationoflife
-
-# Домен (обратный DNS-формат)
 package.domain = org.gamification
-
-# Путь к основному файлу
 source.dir = .
-
-# Главный python-файл
 source.main = main.py
-
-# Версия приложения
 version = 0.1
 
-# Требуемая версия Android
+# Android специфичные настройки
 android.api = 30
 android.minapi = 21
 android.ndk = 23b
 android.sdk = 33
+android.arch = arm64-v8a
 
 # Разрешения
 android.permissions = INTERNET
 
-# Характеристики оборудования
-android.features = 
-
-# Библиотеки Python
-requirements = python3,kivy==2.2.1
-
-# Иконка (путь относительно корня)
+# Пути к ресурсам
+source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,xml
 icon.filename = assets/icons/free-icon-unicorn-4431575.png
 
-# Ориентация экрана
+# Ориентация и графика
 orientation = portrait
-
-# Полноэкранный режим
 fullscreen = 0
-
-# Включение OpenGL ES 2.0
 android.opengl = 2
 
-# В buildozer.spec
-source.include_exts = py,png,jpg,kv,atlas,ttf
-# В разделе [app]
-android.arch = arm64-v8a
+# Зависимости
+requirements = 
+    python3,
+    kivy==2.2.1,
+    openssl,
+    pyjnius,
+    android,
+    kivymd==1.1.1
 
-# В разделе требования
-requirements = python3,kivy==2.2.1,openssl,pyjnius,android
+# Оптимизации
+android.no_ndk_build = False
+android.accept_sdk_license = True
+p4a.branch = develop
+android.private_storage = True
+
+# Логирование
+log_level = 2
+
+[buildozer]
+# Конфигурация buildozer
+log_level = 2
+warn_on_root = 1
