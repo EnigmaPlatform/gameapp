@@ -21,3 +21,10 @@ class Character:
     
     def get_talent_points(self):
         return self.talent_points
+
+    def increase_stat(self, stat_name):
+        if self.talent_points > 0 and stat_name in self.stats:
+            self.stats[stat_name] += 1
+            self.talent_points -= 1
+            return True
+        return False
