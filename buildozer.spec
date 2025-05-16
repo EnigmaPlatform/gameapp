@@ -12,7 +12,7 @@ version = 0.1
 android.api = 30
 android.minapi = 21
 android.ndk = 25b
-android.ndk_path = %(source.dir)s/.buildozer/android/platform/android-ndk-r25b
+android.ndk_path = /home/runner/.buildozer/android/platform/android-ndk-r25b  # Полный путь
 android.sdk = 33
 android.archs = arm64-v8a
 
