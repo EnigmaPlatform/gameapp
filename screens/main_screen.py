@@ -217,13 +217,10 @@ class MainScreen(Screen):
             text='Логи системы',
             background_color=(0.3, 0.3, 0.3, 1),
             font_size='16sp'
-        )
-        logs_btn.bind(on_press=lambda x: self.manager.current('logs'))
-        nav_layout.add_widget(logs_btn)
-        
-        main_layout.add_widget(nav_layout)
-        
-        self.add_widget(main_layout)
+)
+# ИСПРАВЛЕНО: правильный синтаксис навигации
+    logs_btn.bind(on_press=lambda x: setattr(self.manager, 'current', 'logs'))
+    nav_layout.add_widget(logs_btn)
     
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
