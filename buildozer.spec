@@ -6,7 +6,7 @@ package.domain = org.example
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,wav,mp3,json
 
-version = 0.1
+version = 0.2
 requirements = python3,kivy
 
 [buildozer]
