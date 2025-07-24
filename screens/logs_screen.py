@@ -45,14 +45,6 @@ class LogsScreen(Screen):
             "[ERROR] Не удалось найти смысл жизни",
             "[SUCCESS] Смысл жизни найден: создавать персонажей!",
             "[LOG] Пользователь улыбнулся - это хорошо",
-            "[HACK] Активирован режим 'Бог персонажей'",
-            "[INFO] Загрузка шуток...",
-            "[DEBUG] Проверка уровня сарказма...",
-            "[SYSTEM] Генерация случайных чисел...",
-            "[WARNING] Слишком высокий IQ для этой игры",
-            "[ERROR] DivisionByZeroException: попытка делить на кофе",
-            "[SUCCESS] Кофе найден! Продолжаем работу.",
-            "[LOG] Пользователь прочитал это сообщение - паразит!",
             "[HACK] Взлом мозга пользователя... успешно!",
             "[INFO] Подсчет статистики...",
             "[DEBUG] Анализ поведения...",
@@ -151,7 +143,8 @@ class LogsScreen(Screen):
             text='Назад',
             background_color=(0.3, 0.3, 0.3, 1)
         )
-        back_btn.bind(on_press=lambda x: self.manager.current('main'))
+        # ИСПРАВЛЕНО: правильный синтаксис навигации
+        back_btn.bind(on_press=lambda x: setattr(self.manager, 'current', 'main'))
         buttons_layout.add_widget(back_btn)
         
         refresh_btn = Button(
